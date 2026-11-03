@@ -283,6 +283,10 @@ it("should accurately build the registry template", async () => {
 		  "type": "registry:component",
 		}
 	`);
+	// files are installed into different aliases, so imports between them must use aliases
+	for (const file of complexComponent.files) {
+		expect(file.content).not.toMatch(/from "(\$lib\/registry\/|\.\.?\/)/);
+	}
 	expect(exampleForm).toMatchInlineSnapshot(`
 		{
 		  "$schema": "https://shadcn-svelte.com/schema/registry-item.json",
