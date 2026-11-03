@@ -146,8 +146,8 @@ it("should accurately build the registry template", async () => {
 		  "files": [
 		    {
 		      "content": "<script lang="ts">
-			import PokemonCard from "./components/pokemon-card.svelte";
-			import { getPokemonList } from "./lib/pokemon.js";
+			import PokemonCard from "$COMPONENTS$/pokemon-card.svelte";
+			import { getPokemonList } from "$LIB$/pokemon.js";
 		</script>
 
 		{#await getPokemonList({ limit: 12 })}
@@ -173,9 +173,9 @@ it("should accurately build the registry template", async () => {
 		    },
 		    {
 		      "content": "<script lang="ts">
-			import { getPokemon } from "$lib/registry/blocks/complex-component/lib/pokemon.js";
+			import { getPokemon } from "$LIB$/pokemon.js";
 			import * as Card from "$UI$/card/index.js";
-			import PokemonImage from "$lib/registry/blocks/complex-component/components/pokemon-image.svelte";
+			import PokemonImage from "$COMPONENTS$/pokemon-image.svelte";
 
 			let { name }: { name: string } = $props();
 		</script>
@@ -202,7 +202,7 @@ it("should accurately build the registry template", async () => {
 		    },
 		    {
 		      "content": "<script lang="ts">
-			import { usePokemonImage } from "$lib/registry/blocks/complex-component/hooks/use-pokemon.svelte";
+			import { usePokemonImage } from "$HOOKS$/use-pokemon.svelte.js";
 
 			let { number, name }: { number: number; name: string } = $props();
 
@@ -283,6 +283,10 @@ it("should accurately build the registry template", async () => {
 		  "type": "registry:component",
 		}
 	`);
+	// files are installed into different aliases, so imports between them must use aliases
+	for (const file of complexComponent.files) {
+		expect(file.content).not.toMatch(/from "(\$lib\/registry\/|\.\.?\/)/);
+	}
 	expect(exampleForm).toMatchInlineSnapshot(`
 		{
 		  "$schema": "https://shadcn-svelte.com/schema/registry-item.json",
