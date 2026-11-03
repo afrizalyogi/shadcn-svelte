@@ -102,6 +102,7 @@ routes
     ├── data-table-actions.svelte
     ├── data-table-checkbox.svelte
     ├── data-table-email-button.svelte
+    ├── +page.server.ts
     └── +page.svelte
 ```
 
@@ -111,6 +112,7 @@ routes
 - `data-table-actions.svelte` will contain the actions menu for each row.
 - `data-table-checkbox.svelte` will contain the checkbox for each row.
 - `data-table-email-button.svelte` will contain the sortable email header button.
+- `+page.server.ts` is where we'll load the payments data.
 - `+page.svelte` is where we'll render and access `<DataTable />` component.
 
 ## Set up Table Features
@@ -296,9 +298,24 @@ Next, we'll create a `<DataTable />` component to render our table.
 Finally, we'll render our table in our page component.
 
 ```ts showLineNumbers title="routes/payments/+page.server.ts"
+import type { Payment } from "./columns.js";
+
 export async function load() {
-  // logic to fetch payments data here
-  const payments = await getPayments();
+  // replace with your logic to fetch payments data
+  const payments: Payment[] = [
+    {
+      id: "728ed52f",
+      amount: 100,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 125,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+  ];
   return {
     payments,
   };
