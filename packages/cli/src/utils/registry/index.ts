@@ -245,14 +245,17 @@ export function resolveItemFilePath(
 		else return `${utils}.ts`;
 	}
 
-	let aliasDir;
-	if (file.type === "registry:file") {
-		// resolves relative to the item-type's alias
-		aliasDir = getItemAliasDir(config, item.type);
-	} else {
-		// resolves relative to the file-type's alias
-		aliasDir = getItemAliasDir(config, file.type);
+	// `registry:file` resolves relative to the item-type's alias,
+	// everything else resolves relative to the file-type's alias
+	const type = file.type === "registry:file" ? item.type : file.type;
+	const aliasDir = getItemAliasDir(config, type);
+
+	let target = file.target;
+	if (type === "registry:page") {
+		// page targets are already resolved relative to `src/routes`, so a leading
+		// `src/routes/` would otherwise end up as `src/routes/src/routes/...`
+		target = target.replace(/^(\.\/)?src\/routes\//, "");
 	}
 
-	return path.resolve(aliasDir, file.target);
+	return path.resolve(aliasDir, target);
 }

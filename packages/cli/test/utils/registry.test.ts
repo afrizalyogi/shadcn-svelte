@@ -309,6 +309,23 @@ describe("Registry Utilities", () => {
 			);
 		});
 
+		it("should not duplicate `src/routes` for page targets that include it", () => {
+			const item: RegistryItem = {
+				name: "hello",
+				type: "registry:page",
+				files: [
+					{ type: "registry:page", content: "", target: "src/routes/hello/+page.svelte" },
+					{ type: "registry:file", content: "", target: "src/routes/hello/+page.ts" },
+				],
+			};
+			expect(toPosixPath(resolveItemFilePath(mockConfig, item, item.files![0]!))).toBe(
+				"/path/to/cwd/src/routes/hello/+page.svelte"
+			);
+			expect(toPosixPath(resolveItemFilePath(mockConfig, item, item.files![1]!))).toBe(
+				"/path/to/cwd/src/routes/hello/+page.ts"
+			);
+		});
+
 		it("should resolve path for hooks", () => {
 			const item: RegistryItem = {
 				name: "use-hook",
